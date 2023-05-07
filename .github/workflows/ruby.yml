@@ -24,6 +24,7 @@ jobs:
       - name: Install packages
         run: |
           yarn install --pure-lockfile
+          yarn install prettier eslint
 
       - name: Run linters
         run: |
