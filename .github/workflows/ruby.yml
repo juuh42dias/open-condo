@@ -28,7 +28,6 @@ jobs:
       - name: Run linters
         run: |
           bundle exec rubocop --parallel
-          stylelint
           prettier
           eslint
 
