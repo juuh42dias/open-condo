@@ -298,8 +298,8 @@ DEPENDENCIES
   rubocop
   selenium-webdriver
   sprockets-rails
-  stimulus-rails
-  turbo-rails
+  stimulus-rails (~> 1.2)
+  turbo-rails (~> 1.4)
   tzinfo-data
   web-console
   webdrivers
