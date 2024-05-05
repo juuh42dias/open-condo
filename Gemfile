@@ -72,7 +72,7 @@ group :test do
   gem "rspec-rails"
 end
 
-gem "turbo-rails", "~> 1.4"
-gem "stimulus-rails", "~> 1.2"
-
 gem "packwerk", "~> 3.2"
+
+gem "packs", "~> 0.0.41"
+gem "packs-rails", "~> 0.0.5"
