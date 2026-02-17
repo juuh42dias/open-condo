@@ -26,6 +26,7 @@ gem "kredis", "~> 1.0"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.18"
+gem "devise", "~> 4.9"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
@@ -41,10 +42,10 @@ gem "image_processing", "~> 1.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem "debug", platforms: %i[ mri mingw x64_mingw jruby ]
   gem "pry-meta", "~> 0.0.10"
+  gem "rubocop", "~> 1.80"
   gem "rubocop-rails", "~> 2.24"
-  gem "rubocop-rspec", "~> 2.27"
   gem "rubocop-performance", "~> 1.21"
   gem "brakeman", "~> 6.1"
   gem "bundler-audit", "~> 0.9"
@@ -77,3 +78,5 @@ gem "packwerk", "~> 3.2"
 
 gem "packs", "~> 0.0.41"
 gem "packs-rails", "~> 0.0.5"
+
+gem "trace_location", "~> 1.2"

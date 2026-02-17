@@ -11,6 +11,91 @@
   </head>
 
   <body>
-    <%= yield %>
+    <% if flash.any? %>
+      <div class="flash-messages">
+        <% flash.each do |type, message| %>
+          <div class="flash flash-<%= type %>">
+            <%= message %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if user_signed_in? %>
+      <nav class="main-nav">
+        <%= link_to "Dashboard", dashboard_path, class: "nav-link" %>
+        <%= link_to "Buildings", buildings_path, class: "nav-link" %>
+        <%= link_to "Maintenance", maintenance_requests_path, class: "nav-link" %>
+        <%= link_to "Notices", notices_path, class: "nav-link" %>
+        <% if current_user.is_admin? || current_user.is_manager? %>
+          <%= link_to "Users", users_path, class: "nav-link" %>
+          <%= link_to "Payments", payments_path, class: "nav-link" %>
+          <%= link_to "Visitors", visitors_path, class: "nav-link" %>
+        <% end %>
+        <div class="nav-user">
+          Welcome, <%= current_user.name %> |
+          <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "nav-link" %>
+        </div>
+      </nav>
+    <% end %>
+
+    <main class="main-content">
+      <%= yield %>
+    </main>
   </body>
 </html>
+
+<style>
+  .flash-messages {
+    margin: 20px 0;
+  }
+  
+  .flash {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .flash-notice {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .flash-alert {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .main-nav {
+    background-color: #343a40;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .nav-link:hover {
+    background-color: #495057;
+  }
+  
+  .nav-user {
+    margin-left: auto;
+    color: white;
+  }
+  
+  .main-content {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+</style>
