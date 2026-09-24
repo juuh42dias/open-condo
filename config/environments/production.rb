@@ -44,9 +44,13 @@ Rails.application.configure do
   # config.action_cable.mount_path = nil
   # config.action_cable.url = "wss://example.com/cable"
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
+  config.action_cable.url = "wss://condo.juliana.dev/cable"
+  config.action_cable.allowed_request_origins = ["https://condo.juliana.dev"]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  # TLS terminates at kamal-proxy (Let's Encrypt) in front of Cloudflare.
+  config.assume_ssl = true
+  config.force_ssl = true
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).

@@ -41,3 +41,6 @@
 /node_modules
 /yarn-error.log
 /.yarn-integrity
+
+# Kamal secrets (the deploy.yml itself is safe to commit)
+/.kamal/secrets
