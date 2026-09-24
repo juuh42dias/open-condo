@@ -7,6 +7,11 @@
 # Ignore bundler config.
 /.bundle
 
+# Local environment secrets
+/.env
+/.env.local
+/.kamal/secrets
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
@@ -31,3 +36,8 @@
 /config/master.key
 
 /config/database.yml
+
+# Javascript dependencies
+/node_modules
+/yarn-error.log
+/.yarn-integrity

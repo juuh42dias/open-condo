@@ -1,0 +1,28 @@
+<div class="auth-card">
+  <h1>Welcome back</h1>
+  <p class="auth-sub">Sign in to manage your community.</p>
+
+  <%= form_with model: resource, scope: resource_name, url: session_path(resource_name), class: "form" do |f| %>
+    <div class="form-group">
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password, class: "form-label" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "form-control", required: true %>
+    </div>
+
+    <% if devise_mapping.rememberable? %>
+      <label class="checkbox-row">
+        <%= f.check_box :remember_me %> Remember me on this device
+      </label>
+    <% end %>
+
+    <div class="form-actions">
+      <%= f.submit "Sign in", class: "btn btn-primary btn-block" %>
+    </div>
+  <% end %>
+
+  <div class="auth-links"><%= render "devise/shared/links" %></div>
+</div>

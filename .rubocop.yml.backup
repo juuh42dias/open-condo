@@ -1,0 +1,40 @@
+plugins:
+  - rubocop-rails
+  - rubocop-performance
+
+AllCops:
+  Exclude:
+    - "vendor/**/*"
+    - "db/**/*"
+    - "bin/**/*"
+    - "Gemfile"
+    - "Gemfile.lock"
+    - "Rakefile"
+    - "Guardfile"
+    - "node_modules/**/*"
+    - "config/**/*"
+    - "tmp/**/*"
+    - "spec/**/*"
+    - "test/**/*"
+  TargetRubyVersion: 3
+  NewCops: enable
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 130
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "test/**/*"
+
+Style/FormatStringToken:
+  EnforcedStyle: template
+
+Rails/FilePath:
+  EnforcedStyle: arguments
+
+Rails/OutputSafety:
+  Enabled: false

@@ -1,0 +1,10 @@
+<% if object.errors.any? %>
+  <div class="form-errors" role="alert">
+    <p class="form-errors-title"><%= icon "alert", size: 18 %> Please fix the following:</p>
+    <ul>
+      <% object.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

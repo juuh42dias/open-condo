@@ -1,0 +1,15 @@
+one:
+  user: resident
+  common_area: one
+  start_time: 2026-12-10 10:00:00
+  end_time: 2026-12-10 12:00:00
+  status: confirmed
+  total_cost: 50.0
+
+two:
+  user: resident
+  common_area: two
+  start_time: 2026-12-11 14:00:00
+  end_time: 2026-12-11 16:00:00
+  status: pending
+  total_cost: 30.0

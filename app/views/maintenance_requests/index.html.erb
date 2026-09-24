@@ -1,0 +1,39 @@
+<%= page_title "Maintenance requests", subtitle: staff_user? ? "All reported issues" : "Issues you have reported" do %>
+  <%= link_to new_maintenance_request_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> New request<% end %>
+<% end %>
+
+<div class="card">
+  <% if @requests.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Request</th>
+            <th>Unit</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Reported</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @requests.each do |request| %>
+            <tr>
+              <td>
+                <%= link_to request.title, request, class: "list-title" %>
+                <div class="list-meta"><span><%= request.category_label %></span></div>
+              </td>
+              <td class="text-muted"><%= request.unit.unit_number %></td>
+              <td><%= priority_badge request.priority %></td>
+              <td><%= status_badge request %></td>
+              <td class="text-muted"><%= request.created_at.strftime("%b %-d, %Y") %></td>
+              <td class="actions"><%= link_to "View", request, class: "btn btn-ghost btn-sm" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "tools", title: "No maintenance requests", message: "When something needs fixing, report it here and the team will be notified.", action_label: "New request", action_path: new_maintenance_request_path %>
+  <% end %>
+</div>

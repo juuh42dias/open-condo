@@ -1,0 +1,38 @@
+<%= page_title @reservation.common_area.name, subtitle: "Reservation details" do %>
+  <% if staff_user? && @reservation.pending? %>
+    <%= button_to "Confirm", confirm_reservation_path(@reservation), method: :patch, class: "btn btn-success" %>
+  <% end %>
+  <% if @reservation.pending? || @reservation.confirmed? %>
+    <%= button_to "Cancel", cancel_reservation_path(@reservation), method: :patch, class: "btn btn-danger", data: { turbo_confirm: "Cancel this reservation?" } %>
+  <% end %>
+  <%= link_to "Back", reservations_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Summary</h2>
+    <%= status_badge @reservation %>
+  </div>
+  <div class="definition-list">
+    <div>
+      <div class="term">Area</div>
+      <div class="value"><%= link_to @reservation.common_area.name, @reservation.common_area %></div>
+    </div>
+    <div>
+      <div class="term">When</div>
+      <div class="value"><%= @reservation.time_range_label %></div>
+    </div>
+    <div>
+      <div class="term">Duration</div>
+      <div class="value"><%= @reservation.duration_hours %> hours</div>
+    </div>
+    <div>
+      <div class="term">Total cost</div>
+      <div class="value"><%= money(@reservation.total_cost) %></div>
+    </div>
+    <div>
+      <div class="term">Booked by</div>
+      <div class="value"><%= @reservation.user.name %></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<%= page_title "Edit #{@user.name}", subtitle: "Update account details and role" %>
+
+<div class="card">
+  <%= render "form", user: @user, units: @units, selected_unit_id: @selected_unit_id, submit_label: "Save changes" %>
+</div>
+
+<% unless @user == current_user %>
+  <div class="card">
+    <div class="card-header"><h2>Danger zone</h2></div>
+    <p class="text-muted">Deleting this user removes their access and personal records.</p>
+    <%= button_to "Delete user", @user, method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Delete #{@user.name}?" } %>
+  </div>
+<% end %>

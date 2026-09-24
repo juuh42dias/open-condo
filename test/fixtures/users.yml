@@ -1,0 +1,29 @@
+# Valid fixtures matching User validations (name, unique email, role).
+# encrypted_password is a bcrypt hash of "password123".
+admin:
+  name: Admin User
+  email: admin-fixture@condo.com
+  encrypted_password: <%= BCrypt::Password.create('password123') %>
+  role: admin
+  phone: "1111111111"
+
+manager:
+  name: Manager User
+  email: manager-fixture@condo.com
+  encrypted_password: <%= BCrypt::Password.create('password123') %>
+  role: manager
+  phone: "2222222222"
+
+owner:
+  name: Owner User
+  email: owner-fixture@condo.com
+  encrypted_password: <%= BCrypt::Password.create('password123') %>
+  role: owner
+  phone: "4444444444"
+
+resident:
+  name: Resident User
+  email: resident-fixture@condo.com
+  encrypted_password: <%= BCrypt::Password.create('password123') %>
+  role: resident
+  phone: "3333333333"

@@ -1,0 +1,23 @@
+<%= form_with model: [building, common_area, reservation], class: "form" do |f| %>
+  <%= render "shared/form_errors", object: reservation %>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :start_time, "Starts at", class: "form-label" %>
+      <%= f.datetime_local_field :start_time, class: "form-control", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :end_time, "Ends at", class: "form-label" %>
+      <%= f.datetime_local_field :end_time, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <p class="form-hint">
+    <%= common_area.rate_label %>. The total cost is calculated automatically based on the duration.
+  </p>
+
+  <div class="form-actions">
+    <%= f.submit "Request booking", class: "btn btn-primary" %>
+    <%= link_to "Cancel", common_area_path(common_area), class: "btn btn-ghost" %>
+  </div>
+<% end %>

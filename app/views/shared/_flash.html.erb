@@ -1,0 +1,15 @@
+<% if flash.any? %>
+  <div class="flash-stack" data-controller="flash">
+    <% flash.each do |type, message| %>
+      <% next if message.blank? %>
+      <% alert = %w[alert error].include?(type.to_s) %>
+      <div class="flash flash-<%= alert ? "alert" : "notice" %>" data-flash-target="item">
+        <span class="flash-icon"><%= icon(alert ? "alert" : "check", size: 18) %></span>
+        <span class="flash-text"><%= message %></span>
+        <button class="icon-btn flash-close" data-action="flash#dismiss" aria-label="Dismiss">
+          <%= icon "x", size: 16 %>
+        </button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

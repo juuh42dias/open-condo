@@ -1,0 +1,13 @@
+<%= page_title "Edit request", subtitle: @maintenance_request.title %>
+
+<div class="card">
+  <%= render "form", maintenance_request: @maintenance_request, units: @units, submit_label: "Save changes" %>
+</div>
+
+<% if current_user.admin? %>
+  <div class="card">
+    <div class="card-header"><h2>Danger zone</h2></div>
+    <p class="text-muted">Permanently delete this maintenance request.</p>
+    <%= button_to "Delete request", @maintenance_request, method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Delete this request?" } %>
+  </div>
+<% end %>

@@ -1,0 +1,65 @@
+<%= page_title @maintenance_request.title, subtitle: "Unit #{@maintenance_request.unit.unit_number} · #{@maintenance_request.building.name}" do %>
+  <% if staff_user? && @maintenance_request.pending? %>
+    <%= button_to "Start", start_maintenance_request_path(@maintenance_request), method: :patch, class: "btn btn-primary" %>
+  <% end %>
+  <% if staff_user? && !@maintenance_request.completed? && !@maintenance_request.cancelled? %>
+    <%= button_to "Mark complete", complete_maintenance_request_path(@maintenance_request), method: :patch, class: "btn btn-success" %>
+  <% end %>
+  <% if (staff_user? || @maintenance_request.user == current_user) && @maintenance_request.open? %>
+    <%= button_to "Cancel", cancel_maintenance_request_path(@maintenance_request), method: :patch, class: "btn btn-ghost", data: { turbo_confirm: "Cancel this request?" } %>
+  <% end %>
+  <%= link_to "Back", maintenance_requests_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h2>Details</h2>
+      <%= status_badge @maintenance_request %>
+    </div>
+    <p><%= @maintenance_request.description %></p>
+    <div class="definition-list">
+      <div>
+        <div class="term">Category</div>
+        <div class="value"><%= @maintenance_request.category_label %></div>
+      </div>
+      <div>
+        <div class="term">Priority</div>
+        <div class="value"><%= priority_badge @maintenance_request.priority %></div>
+      </div>
+      <div>
+        <div class="term">Reported by</div>
+        <div class="value"><%= @maintenance_request.user.name %></div>
+      </div>
+      <div>
+        <div class="term">Reported on</div>
+        <div class="value"><%= @maintenance_request.created_at.strftime("%b %-d, %Y %H:%M") %></div>
+      </div>
+      <% if @maintenance_request.completed_at.present? %>
+        <div>
+          <div class="term">Completed</div>
+          <div class="value"><%= @maintenance_request.completed_at.strftime("%b %-d, %Y %H:%M") %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Unit</h2></div>
+    <div class="definition-list">
+      <div>
+        <div class="term">Building</div>
+        <div class="value"><%= link_to @maintenance_request.building.name, @maintenance_request.building %></div>
+      </div>
+      <div>
+        <div class="term">Unit</div>
+        <div class="value"><%= link_to @maintenance_request.unit.unit_number, [@maintenance_request.building, @maintenance_request.unit] %></div>
+      </div>
+    </div>
+    <% if staff_user? || @maintenance_request.user == current_user %>
+      <div class="btn-row" style="margin-top: 16px;">
+        <%= link_to "Edit request", edit_maintenance_request_path(@maintenance_request), class: "btn btn-secondary btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+</div>

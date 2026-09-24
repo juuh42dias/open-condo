@@ -1,0 +1,11 @@
+<%= page_title "Edit #{@building.name}", subtitle: "Update building details" %>
+
+<div class="card">
+  <%= render "form", building: @building, submit_label: "Save changes" %>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Danger zone</h2></div>
+  <p class="text-muted">Deleting a building also removes its units, common areas and notices. This cannot be undone.</p>
+  <%= button_to "Delete building", @building, method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Delete #{@building.name} and all of its data?" } %>
+</div>

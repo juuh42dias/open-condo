@@ -1,0 +1,120 @@
+<%= page_title @building.name, subtitle: @building.address do %>
+  <% if staff_user? %>
+    <%= link_to "Add unit", new_building_unit_path(@building), class: "btn btn-secondary" do %><%= icon "plus", size: 18 %> Unit<% end %>
+    <%= link_to "Add area", new_building_common_area_path(@building), class: "btn btn-secondary" do %><%= icon "plus", size: 18 %> Common area<% end %>
+    <%= link_to "Edit", edit_building_path(@building), class: "btn btn-ghost" %>
+  <% end %>
+<% end %>
+
+<div class="grid grid-stats">
+  <div class="stat-card">
+    <span class="stat-icon"><%= icon "home" %></span>
+    <div class="stat-body">
+      <div class="stat-value"><%= @building.unit_count %></div>
+      <div class="stat-label">Units</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon teal"><%= icon "user" %></span>
+    <div class="stat-body">
+      <div class="stat-value"><%= @building.occupied_units.count %></div>
+      <div class="stat-label">Occupied</div>
+      <div class="stat-hint"><%= @building.occupancy_rate %>% occupancy</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon yellow"><%= icon "pin" %></span>
+    <div class="stat-body">
+      <div class="stat-value"><%= @building.common_areas.count %></div>
+      <div class="stat-label">Common areas</div>
+    </div>
+  </div>
+</div>
+
+<% if @building.description.present? %>
+  <div class="card mb-16">
+    <p class="mb-0"><%= @building.description %></p>
+  </div>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Units</h2>
+  </div>
+  <% if @units.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Type</th>
+            <th>Details</th>
+            <th>Status</th>
+            <th>Resident</th>
+            <% if staff_user? %><th class="actions">Actions</th><% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @units.each do |unit| %>
+            <tr>
+              <td><%= link_to "##{unit.unit_number}", [@building, unit], class: "list-title" %></td>
+              <td><%= unit.unit_type_label %></td>
+              <td class="text-muted"><%= unit.details %></td>
+              <td><%= status_badge unit %></td>
+              <td><%= unit.current_resident&.user&.name || "—" %></td>
+              <% if staff_user? %>
+                <td class="actions">
+                  <%= link_to "Edit", edit_building_unit_path(@building, unit), class: "btn btn-ghost btn-sm" %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "home", title: "No units yet", message: "Add units to this building to start assigning residents.", action_label: (staff_user? ? "Add unit" : nil), action_path: (staff_user? ? new_building_unit_path(@building) : nil) %>
+  <% end %>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Common areas</h2>
+    <%= link_to "Browse all", common_areas_path, class: "card-link" %>
+  </div>
+  <% if @common_areas.any? %>
+    <div class="list">
+      <% @common_areas.each do |area| %>
+        <%= link_to area, class: "list-item" do %>
+          <div class="list-main">
+            <div class="list-title"><%= area.name %></div>
+            <div class="list-meta"><span>Capacity <%= area.capacity %></span><span><%= area.rate_label %></span></div>
+          </div>
+          <div class="list-trailing"><%= icon "chevron", size: 18, extra_class: "text-muted" %></div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "pin", title: "No common areas", message: "Add shared spaces like a pool, gym or BBQ area.", action_label: (staff_user? ? "Add area" : nil), action_path: (staff_user? ? new_building_common_area_path(@building) : nil) %>
+  <% end %>
+</div>
+
+<% if @notices.any? %>
+  <div class="card">
+    <div class="card-header">
+      <h2>Latest notices</h2>
+      <%= link_to "All notices", notices_path, class: "card-link" %>
+    </div>
+    <div class="list">
+      <% @notices.each do |notice| %>
+        <%= link_to notice, class: "list-item" do %>
+          <div class="list-main">
+            <div class="list-title"><%= notice.title %></div>
+            <div class="list-meta"><span><%= notice.published_at.strftime("%b %-d, %Y") %></span></div>
+          </div>
+          <div class="list-trailing"><%= status_badge notice %></div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

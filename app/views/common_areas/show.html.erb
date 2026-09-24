@@ -1,0 +1,52 @@
+<%= page_title @common_area.name, subtitle: @common_area.building.name do %>
+  <%= link_to "Reserve", new_building_common_area_reservation_path(@common_area.building, @common_area), class: "btn btn-primary" do %><%= icon "calendar", size: 18 %> Book now<% end %>
+  <% if staff_user? %>
+    <%= link_to "Edit", edit_building_common_area_path(@common_area.building, @common_area), class: "btn btn-ghost" %>
+  <% end %>
+<% end %>
+
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h2>Details</h2>
+      <%= badge(@common_area.free? ? "Free" : @common_area.rate_label, @common_area.free? ? :green : :blue) %>
+    </div>
+    <p><%= @common_area.description %></p>
+    <div class="definition-list">
+      <div>
+        <div class="term">Building</div>
+        <div class="value"><%= link_to @common_area.building.name, @common_area.building %></div>
+      </div>
+      <div>
+        <div class="term">Capacity</div>
+        <div class="value"><%= @common_area.capacity %> people</div>
+      </div>
+      <div>
+        <div class="term">Rate</div>
+        <div class="value"><%= @common_area.rate_label %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Upcoming bookings</h2>
+      <%= link_to "All reservations", reservations_path, class: "card-link" %>
+    </div>
+    <% if @reservations.any? %>
+      <div class="list">
+        <% @reservations.each do |reservation| %>
+          <div class="list-item">
+            <div class="list-main">
+              <div class="list-title"><%= reservation.start_time.strftime("%b %-d, %H:%M") %></div>
+              <div class="list-meta"><span><%= reservation.user.name %></span></div>
+            </div>
+            <div class="list-trailing"><%= status_badge reservation %></div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "shared/empty_state", icon_name: "calendar", title: "No bookings yet", message: "Be the first to reserve this space.", action_label: "Book now", action_path: new_building_common_area_reservation_path(@common_area.building, @common_area) %>
+    <% end %>
+  </div>
+</div>

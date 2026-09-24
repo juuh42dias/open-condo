@@ -1,0 +1,9 @@
+one:
+  owner: one
+  unit: two
+  ownership_percentage: 100.0
+
+two:
+  owner: two
+  unit: one
+  ownership_percentage: 50.0

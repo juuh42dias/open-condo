@@ -129,4 +129,36 @@ notice = Notice.create!(
 )
 puts "Created notice: #{notice.title}"
 
+# Balanced Starter Pack samples (best-practice modules)
+package = Package.create!(
+  unit: first_unit,
+  recipient_name: resident_user.name,
+  sender: "Amazon",
+  carrier: "Correios",
+  tracking_code: "BR123456789",
+  notes: "Left in locker A1"
+)
+puts "Created package for #{package.recipient_name}"
+
+violation = Violation.create!(
+  unit: first_unit,
+  reported_by: admin_user,
+  title: "Noise after quiet hours",
+  description: "Loud music reported after 10pm on two consecutive nights.",
+  violation_type: "noise",
+  severity: "medium",
+  fine_amount: 50.0
+)
+puts "Created violation: #{violation.title}"
+
+poll = Poll.create!(
+  building: building,
+  user: admin_user,
+  title: "Should we renovate the playground?",
+  description: "Vote on the 2026 playground renovation proposal.",
+  closes_at: 2.weeks.from_now,
+  poll_options_attributes: [{ text: "Yes, renovate" }, { text: "No, keep as is" }, { text: "Needs more info" }]
+)
+puts "Created poll: #{poll.title}"
+
 puts "Seed data created successfully!"

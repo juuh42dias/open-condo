@@ -1,0 +1,8 @@
+<div class="empty-state">
+  <span class="empty-icon"><%= icon(icon_name, size: 28) %></span>
+  <h3><%= title %></h3>
+  <p><%= message %></p>
+  <% if local_assigns[:action_label] && local_assigns[:action_path] %>
+    <%= link_to action_label, action_path, class: "btn btn-primary" %>
+  <% end %>
+</div>

@@ -1,0 +1,51 @@
+<%= page_title @user.name, subtitle: @user.email do %>
+  <%= link_to "Edit", edit_user_path(@user), class: "btn btn-secondary" %>
+  <%= link_to "Back", users_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h2>Profile</h2>
+      <%= badge(@user.role_label, @user.admin? ? :purple : :blue) %>
+    </div>
+    <div class="definition-list">
+      <div>
+        <div class="term">Name</div>
+        <div class="value"><%= @user.name %></div>
+      </div>
+      <div>
+        <div class="term">Email</div>
+        <div class="value"><%= @user.email %></div>
+      </div>
+      <div>
+        <div class="term">Phone</div>
+        <div class="value"><%= @user.phone.presence || "—" %></div>
+      </div>
+      <div>
+        <div class="term">Member since</div>
+        <div class="value"><%= @user.created_at.strftime("%B %Y") %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Units</h2></div>
+    <% units = @user.units %>
+    <% if units.any? %>
+      <div class="list">
+        <% units.each do |unit| %>
+          <div class="list-item">
+            <div class="list-main">
+              <div class="list-title"><%= unit.label %></div>
+              <div class="list-meta"><span><%= unit.details %></span></div>
+            </div>
+            <div class="list-trailing"><%= status_badge unit %></div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "shared/empty_state", icon_name: "home", title: "No units", message: "This user is not linked to any unit yet." %>
+    <% end %>
+  </div>
+</div>

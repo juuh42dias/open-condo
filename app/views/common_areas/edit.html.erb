@@ -1,0 +1,11 @@
+<%= page_title "Edit #{@common_area.name}", subtitle: @common_area.building.name %>
+
+<div class="card">
+  <%= render "form", building: @common_area.building, common_area: @common_area, submit_label: "Save changes" %>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Danger zone</h2></div>
+  <p class="text-muted">Deleting this common area removes all of its reservations.</p>
+  <%= button_to "Delete area", [@common_area.building, @common_area], method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Delete #{@common_area.name}?" } %>
+</div>

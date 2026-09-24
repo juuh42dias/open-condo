@@ -1,0 +1,52 @@
+<%= page_title @poll.title, subtitle: "#{@poll.building&.name} · #{@poll.total_votes} votes" do %>
+  <% if staff_user? %>
+    <% if @poll.open? %>
+      <%= button_to "Close", close_poll_path(@poll), method: :patch, class: "btn btn-secondary" %>
+    <% else %>
+      <%= button_to "Reopen", reopen_poll_path(@poll), method: :patch, class: "btn btn-secondary" %>
+    <% end %>
+    <%= link_to "Edit", edit_poll_path(@poll), class: "btn btn-ghost" %>
+  <% end %>
+  <%= link_to "Back", polls_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h2>Question</h2>
+      <%= status_badge @poll %>
+    </div>
+    <p class="text-muted"><%= @poll.description.presence || "No description." %></p>
+    <% if @poll.closes_at.present? %>
+      <p class="text-muted">Closes <%= @poll.closes_at.strftime("%b %-d, %Y %H:%M") %></p>
+    <% end %>
+
+    <% if @poll.open? %>
+      <% if @vote %>
+        <p><strong>You voted for: <%= @vote.poll_option.text %></strong></p>
+      <% else %>
+        <h3>Cast your vote</h3>
+        <% @poll.poll_options.each do |option| %>
+          <%= button_to option.text, vote_poll_path(@poll, poll_option_id: option.id), method: :post, class: "btn btn-primary", style: "margin-bottom:8px; width:100%;" %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="text-muted">This poll is closed.</p>
+    <% end %>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Results</h2></div>
+    <% @results.each do |row| %>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; font-size:14px;">
+          <strong><%= row[:option].text %></strong>
+          <span><%= row[:count] %> · <%= row[:percentage] %>%</span>
+        </div>
+        <div style="background:#eee; border-radius:6px; height:8px; margin-top:4px;">
+          <div style="background:#4f46e5; height:8px; border-radius:6px; width:<%= row[:percentage] %>%;"></div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

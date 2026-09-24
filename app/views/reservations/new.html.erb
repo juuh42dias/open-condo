@@ -1,0 +1,24 @@
+<%= page_title "Book #{@common_area.name}", subtitle: "#{@common_area.building.name} · #{@common_area.rate_label}" %>
+
+<div class="grid grid-2">
+  <div class="card">
+    <%= render "form", building: @building, common_area: @common_area, reservation: @reservation %>
+  </div>
+  <div class="card">
+    <div class="card-header"><h2>How it works</h2></div>
+    <div class="definition-list">
+      <div>
+        <div class="term"><%= icon "clock", size: 16 %> Duration</div>
+        <div class="value">Pick a start and end time. Cost is calculated per hour.</div>
+      </div>
+      <div>
+        <div class="term"><%= icon "check", size: 16 %> Confirmation</div>
+        <div class="value">Your booking is pending until a manager confirms it.</div>
+      </div>
+      <div>
+        <div class="term"><%= icon "users", size: 16 %> Capacity</div>
+        <div class="value">Up to <%= @common_area.capacity %> people.</div>
+      </div>
+    </div>
+  </div>
+</div>

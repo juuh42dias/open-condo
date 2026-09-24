@@ -1,0 +1,39 @@
+<%= page_title "Packages", subtitle: staff_user? ? "Concierge parcel log — #{@awaiting_count} awaiting pickup" : "Your parcels — #{@awaiting_count} awaiting pickup" do %>
+  <% if staff_user? %>
+    <%= link_to new_package_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> Log package<% end %>
+  <% end %>
+<% end %>
+
+<div class="card">
+  <% if @packages.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Recipient</th>
+            <th>Unit</th>
+            <th>Carrier / Sender</th>
+            <th>Status</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @packages.each do |package| %>
+            <tr>
+              <td>
+                <%= link_to package.recipient_name, package, class: "list-title" %>
+                <div class="list-meta"><span><%= package.tracking_code.presence || "No tracking" %></span></div>
+              </td>
+              <td class="text-muted"><%= package.unit&.label || "—" %></td>
+              <td class="text-muted"><%= [package.carrier, package.sender].compact.reject(&:blank?).join(" · ").presence || "—" %></td>
+              <td><%= status_badge package %></td>
+              <td class="actions"><%= link_to "View", package, class: "btn btn-ghost btn-sm" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "package", title: "No packages", message: "Parcels logged at the front desk will appear here." %>
+  <% end %>
+</div>

@@ -1,0 +1,43 @@
+<%= page_title "Reservations", subtitle: staff_user? ? "All common area bookings" : "Your common area bookings" do %>
+  <%= link_to "Browse areas", common_areas_path, class: "btn btn-secondary" do %><%= icon "calendar", size: 18 %> New booking<% end %>
+<% end %>
+
+<div class="card">
+  <% if @reservations.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>When</th>
+            <th>Booked by</th>
+            <th>Cost</th>
+            <th>Status</th>
+            <th class="actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @reservations.each do |reservation| %>
+            <tr>
+              <td><%= link_to reservation.common_area.name, reservation, class: "list-title" %></td>
+              <td class="text-muted"><%= reservation.time_range_label %></td>
+              <td><%= reservation.user.name %></td>
+              <td><%= money(reservation.total_cost) %></td>
+              <td><%= status_badge reservation %></td>
+              <td class="actions">
+                <% if staff_user? && reservation.pending? %>
+                  <%= button_to "Confirm", confirm_reservation_path(reservation), method: :patch, class: "btn btn-success btn-sm" %>
+                <% end %>
+                <% if reservation.pending? || reservation.confirmed? %>
+                  <%= button_to "Cancel", cancel_reservation_path(reservation), method: :patch, class: "btn btn-ghost btn-sm", data: { turbo_confirm: "Cancel this reservation?" } %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "calendar", title: "No reservations", message: "Book a common area such as the pool, gym or BBQ area.", action_label: "Browse common areas", action_path: common_areas_path %>
+  <% end %>
+</div>

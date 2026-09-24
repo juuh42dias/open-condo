@@ -1,0 +1,17 @@
+one:
+  unit_number: "101"
+  building: one
+  unit_type: apartment
+  bedrooms: 2
+  bathrooms: 1
+  area: 80.0
+  status: occupied
+
+two:
+  unit_number: "102"
+  building: one
+  unit_type: apartment
+  bedrooms: 1
+  bathrooms: 1
+  area: 60.0
+  status: available

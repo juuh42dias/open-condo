@@ -1,0 +1,29 @@
+<%= page_title @notice.title, subtitle: "#{@notice.building.name} · #{@notice.published_at.strftime('%B %-d, %Y')}" do %>
+  <% if staff_user? %>
+    <%= link_to "Edit", edit_notice_path(@notice), class: "btn btn-secondary" %>
+  <% end %>
+  <%= link_to "Back", notices_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Announcement</h2>
+    <%= status_badge @notice %>
+  </div>
+  <div class="notice-body">
+    <%= simple_format @notice.content %>
+  </div>
+  <hr class="divider">
+  <div class="meta-row mb-0">
+    <span class="meta"><%= icon "user", size: 16 %> <%= @notice.user.name %></span>
+    <span class="meta"><%= icon "building", size: 16 %> <%= @notice.building.name %></span>
+    <% if @notice.expires_at.present? %>
+      <span class="meta"><%= icon "clock", size: 16 %> Expires <%= @notice.expires_at.strftime("%b %-d, %Y") %></span>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  .notice-body { font-size: 1rem; line-height: 1.7; }
+  .notice-body p { margin-bottom: 0.9em; }
+</style>

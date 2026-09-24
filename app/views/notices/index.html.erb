@@ -1,0 +1,33 @@
+<%= page_title "Notices", subtitle: "Community announcements" do %>
+  <% if staff_user? %>
+    <%= link_to new_notice_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> New notice<% end %>
+  <% end %>
+<% end %>
+
+<% if @notices.any? %>
+  <div class="grid grid-cards">
+    <% @notices.each do |notice| %>
+      <div class="card">
+        <div class="card-header">
+          <h2><%= link_to notice.title, notice %></h2>
+          <%= status_badge notice %>
+        </div>
+        <p class="text-muted"><%= truncate(notice.content, length: 140) %></p>
+        <div class="meta-row mb-0">
+          <span class="meta"><%= icon "building", size: 16 %> <%= notice.building.name %></span>
+          <span class="meta"><%= icon "clock", size: 16 %> <%= notice.published_at.strftime("%b %-d, %Y") %></span>
+        </div>
+        <div class="btn-row" style="margin-top: 12px;">
+          <%= link_to "Read", notice, class: "btn btn-secondary btn-sm" %>
+          <% if staff_user? %>
+            <%= link_to "Edit", edit_notice_path(notice), class: "btn btn-ghost btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card">
+    <%= render "shared/empty_state", icon_name: "bell", title: "No notices", message: "Announcements from management will appear here.", action_label: (staff_user? ? "New notice" : nil), action_path: (staff_user? ? new_notice_path : nil) %>
+  </div>
+<% end %>

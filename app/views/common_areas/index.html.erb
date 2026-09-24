@@ -1,0 +1,31 @@
+<%= page_title "Common areas", subtitle: "Book shared spaces in your community" do %>
+  <% if staff_user? && @common_areas.any? %>
+    <%= link_to new_building_common_area_path(@common_areas.first.building), class: "btn btn-primary" do %><%= icon "plus", size: 18 %> Add area<% end %>
+  <% end %>
+<% end %>
+
+<% if @common_areas.any? %>
+  <div class="grid grid-cards">
+    <% @common_areas.each do |area| %>
+      <div class="card">
+        <div class="card-header">
+          <h2><%= area.name %></h2>
+          <%= badge(area.free? ? "Free" : area.rate_label, area.free? ? :green : :blue) %>
+        </div>
+        <p class="text-muted"><%= truncate(area.description, length: 110) %></p>
+        <div class="meta-row">
+          <span class="meta"><%= icon "building", size: 16 %> <%= area.building.name %></span>
+          <span class="meta"><%= icon "users", size: 16 %> Capacity <%= area.capacity %></span>
+        </div>
+        <div class="btn-row">
+          <%= link_to "View", area, class: "btn btn-secondary btn-sm" %>
+          <%= link_to "Reserve", new_building_common_area_reservation_path(area.building, area), class: "btn btn-primary btn-sm" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card">
+    <%= render "shared/empty_state", icon_name: "pin", title: "No common areas", message: "Common areas let residents book shared spaces.", action_label: (staff_user? ? "Add area" : nil), action_path: (staff_user? && Building.any? ? new_building_common_area_path(Building.first) : nil) %>
+  </div>
+<% end %>

@@ -1,0 +1,41 @@
+<%= form_with model: notice, class: "form" do |f| %>
+  <%= render "shared/form_errors", object: notice %>
+
+  <div class="form-group">
+    <%= f.label :title, class: "form-label" %>
+    <%= f.text_field :title, class: "form-control", placeholder: "Elevator maintenance this weekend", required: true %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :building_id, "Building", class: "form-label" %>
+      <%= f.collection_select :building_id, Building.ordered, :id, :name, { prompt: "Select a building" }, class: "form-control", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :priority, class: "form-label" %>
+      <%= f.select :priority, Notice::PRIORITIES.map { |p| [p.capitalize, p] }, {}, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :published_at, "Publish at", class: "form-label" %>
+      <%= f.datetime_local_field :published_at, class: "form-control", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :expires_at, "Expires at", class: "form-label" %>
+      <%= f.datetime_local_field :expires_at, class: "form-control" %>
+      <span class="form-hint">Leave blank to keep the notice visible indefinitely.</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :content, class: "form-label" %>
+    <%= f.text_area :content, class: "form-control", rows: 6, required: true %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit submit_label, class: "btn btn-primary" %>
+    <%= link_to "Cancel", (notice.persisted? ? notice : notices_path), class: "btn btn-ghost" %>
+  </div>
+<% end %>

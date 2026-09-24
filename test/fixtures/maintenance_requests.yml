@@ -1,0 +1,18 @@
+one:
+  user: resident
+  unit: one
+  title: Leaky faucet
+  description: The kitchen faucet is dripping constantly.
+  priority: medium
+  status: pending
+  category: plumbing
+
+two:
+  user: resident
+  unit: one
+  title: Broken light
+  description: Hallway light near the elevator is out.
+  priority: low
+  status: completed
+  category: electrical
+  completed_at: 2026-02-06 10:00:00

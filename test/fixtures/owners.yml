@@ -1,0 +1,7 @@
+one:
+  user: owner
+  units_owned: Unit 102
+
+two:
+  user: manager
+  units_owned: Unit 101

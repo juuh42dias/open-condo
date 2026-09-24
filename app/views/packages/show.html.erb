@@ -1,0 +1,65 @@
+<%= page_title @package.recipient_name, subtitle: "Parcel for #{@package.unit&.label}" do %>
+  <% if staff_user? && @package.awaiting_pickup? %>
+    <% if @package.status == "received" %>
+      <%= button_to "Notify resident", notify_pickup_package_path(@package), method: :patch, class: "btn btn-secondary" %>
+    <% end %>
+    <%= button_to "Mark picked up", mark_picked_up_package_path(@package), method: :patch, class: "btn btn-primary" %>
+  <% end %>
+  <%= link_to "Back", packages_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Parcel details</h2>
+    <%= status_badge @package %>
+  </div>
+  <div class="definition-list">
+    <div>
+      <div class="term">Recipient</div>
+      <div class="value"><%= @package.recipient_name %></div>
+    </div>
+    <div>
+      <div class="term">Unit</div>
+      <div class="value"><%= @package.unit&.label %></div>
+    </div>
+    <div>
+      <div class="term">Carrier</div>
+      <div class="value"><%= @package.carrier.presence || "—" %></div>
+    </div>
+    <div>
+      <div class="term">Sender</div>
+      <div class="value"><%= @package.sender.presence || "—" %></div>
+    </div>
+    <div>
+      <div class="term">Tracking</div>
+      <div class="value"><%= @package.tracking_code.presence || "—" %></div>
+    </div>
+    <div>
+      <div class="term">Received</div>
+      <div class="value"><%= @package.received_at&.strftime("%b %-d, %H:%M") || "—" %></div>
+    </div>
+    <% if @package.notified_at.present? %>
+      <div>
+        <div class="term">Notified</div>
+        <div class="value"><%= @package.notified_at.strftime("%b %-d, %H:%M") %></div>
+      </div>
+    <% end %>
+    <% if @package.picked_up_at.present? %>
+      <div>
+        <div class="term">Picked up</div>
+        <div class="value"><%= @package.picked_up_at.strftime("%b %-d, %H:%M") %></div>
+      </div>
+    <% end %>
+    <% if @package.notes.present? %>
+      <div>
+        <div class="term">Notes</div>
+        <div class="value"><%= @package.notes %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if staff_user? && @package.awaiting_pickup? %>
+    <hr class="divider">
+    <%= button_to "Mark returned", mark_returned_package_path(@package), method: :patch, class: "btn btn-ghost btn-sm", data: { turbo_confirm: "Mark this package as returned?" } %>
+  <% end %>
+</div>

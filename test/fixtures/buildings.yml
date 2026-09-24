@@ -1,0 +1,11 @@
+one:
+  name: Sunset Towers
+  address: 123 Main St
+  description: Fixture building one
+  total_units: 10
+
+two:
+  name: Ocean View
+  address: 456 Beach Ave
+  description: Fixture building two
+  total_units: 8

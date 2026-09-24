@@ -1,0 +1,325 @@
+<% if staff_user? %>
+  <%= page_title "Dashboard", subtitle: "Your community at a glance" do %>
+    <%= link_to new_notice_path, class: "btn btn-secondary" do %><%= icon "bell", size: 18 %> New notice<% end %>
+    <%= link_to new_maintenance_request_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> New request<% end %>
+  <% end %>
+
+  <div class="grid grid-stats">
+    <div class="stat-card">
+      <span class="stat-icon"><%= icon "building" %></span>
+      <div class="stat-body">
+        <div class="stat-value"><%= @buildings.count %></div>
+        <div class="stat-label">Buildings</div>
+        <div class="stat-hint"><%= @units.count %> units total</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon teal"><%= icon "home" %></span>
+      <div class="stat-body">
+        <div class="stat-value"><%= @units.occupied.count %></div>
+        <div class="stat-label">Occupied units</div>
+        <div class="stat-hint"><%= @units.available.count %> available</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon yellow"><%= icon "tools" %></span>
+      <div class="stat-body">
+        <div class="stat-value"><%= @maintenance_count %></div>
+        <div class="stat-label">Open requests</div>
+        <%= link_to "Review", maintenance_requests_path, class: "card-link" %>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon red"><%= icon "card" %></span>
+      <div class="stat-body">
+        <div class="stat-value"><%= money(@payments_due_total) %></div>
+        <div class="stat-label">Pending charges</div>
+        <div class="stat-hint"><%= @overdue_payments.count %> overdue</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-header">
+        <h2>Open maintenance</h2>
+        <%= link_to "All requests", maintenance_requests_path, class: "card-link" %>
+      </div>
+      <% if @open_requests.any? %>
+        <div class="list">
+          <% @open_requests.limit(5).each do |request| %>
+            <%= link_to request, class: "list-item" do %>
+              <div class="list-main">
+                <div class="list-title"><%= request.title %></div>
+                <div class="list-meta">
+                  <span>Unit <%= request.unit.unit_number %></span>
+                  <span><%= request.user.name %></span>
+                </div>
+              </div>
+              <div class="list-trailing"><%= status_badge request %><%= priority_badge request.priority %></div>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <%= render "shared/empty_state", icon_name: "check", title: "No open requests", message: "Everything is under control." %>
+      <% end %>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <h2>Pending visitors</h2>
+          <%= link_to "All visitors", visitors_path, class: "card-link" %>
+        </div>
+        <% if @pending_visitors.any? %>
+          <div class="list">
+            <% @pending_visitors.each do |visitor| %>
+              <%= link_to visitor, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= visitor.name %></div>
+                  <div class="list-meta"><span>Unit <%= visitor.unit&.unit_number %></span><span><%= visitor.visit_date %></span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge visitor %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "door", title: "No pending visitors", message: "Nothing waiting for approval." %>
+        <% end %>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Active notices</h2>
+          <%= link_to "All notices", notices_path, class: "card-link" %>
+        </div>
+        <% if @notices.any? %>
+          <div class="list">
+            <% @notices.each do |notice| %>
+              <%= link_to notice, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= notice.title %></div>
+                  <div class="list-meta"><span><%= notice.building.name %></span><span><%= notice.published_at.strftime("%b %-d") %></span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge notice %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "bell", title: "No active notices", message: "Post one to keep everyone informed.", action_label: "New notice", action_path: new_notice_path %>
+        <% end %>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Parcels awaiting pickup (<%= @awaiting_packages_count %>)</h2>
+          <%= link_to "All packages", packages_path, class: "card-link" %>
+        </div>
+        <% if @awaiting_packages.any? %>
+          <div class="list">
+            <% @awaiting_packages.each do |package| %>
+              <%= link_to package, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= package.recipient_name %></div>
+                  <div class="list-meta"><span>Unit <%= package.unit&.unit_number %></span><span><%= package.carrier.presence || "No carrier" %></span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge package %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "package", title: "No parcels waiting", message: "Front desk log is clear." %>
+        <% end %>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Open violations (<%= @open_violations_count %>)</h2>
+          <%= link_to "All violations", violations_path, class: "card-link" %>
+        </div>
+        <% if @open_violations.any? %>
+          <div class="list">
+            <% @open_violations.each do |violation| %>
+              <%= link_to violation, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= violation.title %></div>
+                  <div class="list-meta"><span>Unit <%= violation.unit&.unit_number %></span><span><%= violation.severity_label %></span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge violation %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "shield", title: "No open violations", message: "Community rules are being followed." %>
+        <% end %>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Active polls</h2>
+          <%= link_to "All polls", polls_path, class: "card-link" %>
+        </div>
+        <% if @active_polls.any? %>
+          <div class="list">
+            <% @active_polls.each do |poll| %>
+              <%= link_to poll, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= poll.title %></div>
+                  <div class="list-meta"><span><%= poll.building&.name %></span><span><%= poll.total_votes %> votes</span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge poll %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "vote", title: "No active polls", message: "Publish a survey or e-vote.", action_label: "New poll", action_path: new_poll_path %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <%= page_title "Hello, #{current_user.name.split.first}", subtitle: "Here is what is happening in your community" do %>
+    <%= link_to new_maintenance_request_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> New request<% end %>
+  <% end %>
+
+  <div class="grid grid-stats">
+    <div class="stat-card">
+      <span class="stat-icon yellow"><%= icon "tools" %></span>
+      <div class="stat-body">
+        <div class="stat-value"><%= @my_requests.count { |r| r.open? } %></div>
+        <div class="stat-label">Open requests</div>
+        <%= link_to "View all", maintenance_requests_path, class: "card-link" %>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon teal"><%= icon "calendar" %></span>
+      <div class="stat-body">
+        <div class="stat-value"><%= @my_reservations.count %></div>
+        <div class="stat-label">Upcoming bookings</div>
+        <%= link_to "Reserve", common_areas_path, class: "card-link" %>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon red"><%= icon "card" %></span>
+      <div class="stat-body">
+        <div class="stat-value"><%= money(@my_balance) %></div>
+        <div class="stat-label">Balance due</div>
+        <%= link_to "Payments", payments_path, class: "card-link" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-header">
+        <h2>Your requests</h2>
+        <%= link_to "All", maintenance_requests_path, class: "card-link" %>
+      </div>
+      <% if @my_requests.any? %>
+        <div class="list">
+          <% @my_requests.each do |request| %>
+            <%= link_to request, class: "list-item" do %>
+              <div class="list-main">
+                <div class="list-title"><%= request.title %></div>
+                <div class="list-meta"><span><%= request.category_label %></span><span><%= time_ago_in_words(request.created_at) %> ago</span></div>
+              </div>
+              <div class="list-trailing"><%= status_badge request %></div>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <%= render "shared/empty_state", icon_name: "tools", title: "No requests yet", message: "Report an issue and we will take care of it.", action_label: "New request", action_path: new_maintenance_request_path %>
+      <% end %>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <h2>Upcoming bookings</h2>
+          <%= link_to "All", reservations_path, class: "card-link" %>
+        </div>
+        <% if @my_reservations.any? %>
+          <div class="list">
+            <% @my_reservations.each do |reservation| %>
+              <%= link_to reservation, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= reservation.common_area.name %></div>
+                  <div class="list-meta"><span><%= reservation.start_time.strftime("%b %-d, %H:%M") %></span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge reservation %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "calendar", title: "No bookings", message: "Book a common area for your next event.", action_label: "Browse areas", action_path: common_areas_path %>
+        <% end %>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Recent charges</h2>
+          <%= link_to "All", payments_path, class: "card-link" %>
+        </div>
+        <% if @my_payments.any? %>
+          <div class="list">
+            <% @my_payments.each do |payment| %>
+              <%= link_to payment, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= money(payment.amount) %> · <%= payment.payment_type_label %></div>
+                  <div class="list-meta"><span>Due <%= payment.due_date.strftime("%b %-d") %></span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge payment %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "card", title: "No charges", message: "You are all caught up." %>
+        <% end %>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Your parcels</h2>
+          <%= link_to "All", packages_path, class: "card-link" %>
+        </div>
+        <% if @my_packages.any? %>
+          <div class="list">
+            <% @my_packages.each do |package| %>
+              <%= link_to package, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= package.recipient_name %></div>
+                  <div class="list-meta"><span><%= package.carrier.presence || "Parcel" %></span><span><%= package.received_at&.strftime("%b %-d") %></span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge package %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "package", title: "No parcels", message: "No packages waiting for you." %>
+        <% end %>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Open votes</h2>
+          <%= link_to "All", polls_path, class: "card-link" %>
+        </div>
+        <% if @open_polls.any? %>
+          <div class="list">
+            <% @open_polls.each do |poll| %>
+              <%= link_to poll, class: "list-item" do %>
+                <div class="list-main">
+                  <div class="list-title"><%= poll.title %></div>
+                  <div class="list-meta"><span><%= poll.total_votes %> votes</span></div>
+                </div>
+                <div class="list-trailing"><%= status_badge poll %></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render "shared/empty_state", icon_name: "vote", title: "No open votes", message: "No surveys need your vote right now." %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

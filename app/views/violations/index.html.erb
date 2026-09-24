@@ -1,0 +1,37 @@
+<%= page_title "Violations", subtitle: staff_user? ? "#{@open_count} open cases" : "Rule violations for your units" do %>
+  <%= link_to new_violation_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> Report violation<% end %>
+<% end %>
+
+<div class="card">
+  <% if @violations.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Unit</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @violations.each do |violation| %>
+            <tr>
+              <td>
+                <%= link_to violation.title, violation, class: "list-title" %>
+                <div class="list-meta"><span><%= violation.violation_type_label %></span></div>
+              </td>
+              <td class="text-muted"><%= violation.unit&.unit_number || "—" %></td>
+              <td><%= priority_badge violation.severity %></td>
+              <td><%= status_badge violation %></td>
+              <td class="actions"><%= link_to "View", violation, class: "btn btn-ghost btn-sm" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "shield", title: "No violations", message: "Report noise, parking or common-area issues here.", action_label: "Report violation", action_path: new_violation_path %>
+  <% end %>
+</div>

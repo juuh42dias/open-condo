@@ -1,0 +1,49 @@
+<%= page_title "Users", subtitle: "#{@users.count} #{"account".pluralize(@users.count)}" do %>
+  <%= link_to new_user_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> Add user<% end %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>All users</h2>
+    <div class="btn-row">
+      <%= link_to "All", users_path, class: "btn btn-sm #{params[:role].blank? ? 'btn-primary' : 'btn-secondary'}" %>
+      <% User.roles.each do |role| %>
+        <%= link_to role.capitalize, users_path(role: role), class: "btn btn-sm #{params[:role] == role ? 'btn-primary' : 'btn-secondary'}" %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @users.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Unit</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td>
+                <%= link_to user.name, user, class: "list-title" %>
+                <div class="list-meta"><span><%= user.phone.presence || "No phone" %></span></div>
+              </td>
+              <td class="text-muted"><%= user.email %></td>
+              <td><%= badge(user.role_label, user.admin? ? :purple : :blue) %></td>
+              <td class="text-muted"><%= user.resident&.unit&.unit_number || user.owner&.units&.first&.unit_number || "—" %></td>
+              <td class="actions">
+                <%= link_to "Edit", edit_user_path(user), class: "btn btn-ghost btn-sm" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "users", title: "No users found", message: "Try a different filter or add a new user.", action_label: "Add user", action_path: new_user_path %>
+  <% end %>
+</div>

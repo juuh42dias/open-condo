@@ -1,0 +1,48 @@
+<%= form_with model: visitor, class: "form" do |f| %>
+  <%= render "shared/form_errors", object: visitor %>
+
+  <% if units.present? %>
+    <div class="form-group">
+      <%= f.label :unit_id, "Unit hosting the visitor", class: "form-label" %>
+      <%= f.collection_select :unit_id, units, :id, :label, { prompt: "Select a unit", selected: selected_unit_id }, class: "form-control", required: true %>
+      <span class="form-hint">The visitor is linked to the resident of this unit.</span>
+    </div>
+  <% end %>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :name, class: "form-label" %>
+      <%= f.text_field :name, class: "form-control", placeholder: "Visitor full name", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :id_number, "ID / document number", class: "form-label" %>
+      <%= f.text_field :id_number, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :phone, class: "form-label" %>
+      <%= f.telephone_field :phone, class: "form-control", placeholder: "5551234567", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :visit_date, class: "form-label" %>
+      <%= f.date_field :visit_date, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :visit_time, "Expected arrival time", class: "form-label" %>
+    <%= f.datetime_local_field :visit_time, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :purpose, class: "form-label" %>
+    <%= f.text_area :purpose, class: "form-control", rows: 3, placeholder: "Reason for the visit", required: true %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit submit_label, class: "btn btn-primary" %>
+    <%= link_to "Cancel", visitors_path, class: "btn btn-ghost" %>
+  </div>
+<% end %>

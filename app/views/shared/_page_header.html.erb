@@ -1,0 +1,11 @@
+<header class="page-header">
+  <div>
+    <h1><%= title %></h1>
+    <% if subtitle.present? %>
+      <p class="page-subtitle"><%= subtitle %></p>
+    <% end %>
+  </div>
+  <% if actions.present? %>
+    <div class="page-actions"><%= actions %></div>
+  <% end %>
+</header>

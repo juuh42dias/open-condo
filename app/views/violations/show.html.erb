@@ -1,0 +1,55 @@
+<%= page_title @violation.title, subtitle: "#{@violation.violation_type_label} · Unit #{@violation.unit&.unit_number}" do %>
+  <% if staff_user? && @violation.open? %>
+    <%= button_to "Acknowledge", acknowledge_violation_path(@violation), method: :patch, class: "btn btn-secondary" %>
+    <%= button_to "Resolve", resolve_violation_path(@violation), method: :patch, class: "btn btn-primary" %>
+  <% end %>
+  <%= link_to "Back", violations_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Violation details</h2>
+    <div><%= status_badge @violation %> <%= priority_badge @violation.severity %></div>
+  </div>
+  <div class="definition-list">
+    <div>
+      <div class="term">Unit</div>
+      <div class="value"><%= @violation.unit&.label %></div>
+    </div>
+    <div>
+      <div class="term">Reported by</div>
+      <div class="value"><%= @violation.reported_by&.name %></div>
+    </div>
+    <div>
+      <div class="term">Type</div>
+      <div class="value"><%= @violation.violation_type_label %></div>
+    </div>
+    <div>
+      <div class="term">Description</div>
+      <div class="value"><%= @violation.description %></div>
+    </div>
+    <div>
+      <div class="term">Fine</div>
+      <div class="value"><%= number_to_currency(@violation.fine_amount || 0) %></div>
+    </div>
+    <% if @violation.resolved_at.present? %>
+      <div>
+        <div class="term">Resolved</div>
+        <div class="value"><%= @violation.resolved_at.strftime("%b %-d, %Y %H:%M") %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if staff_user? %>
+    <hr class="divider">
+    <div class="form-actions">
+      <% if @violation.open? %>
+        <%= button_to "Dismiss", dismiss_violation_path(@violation), method: :patch, class: "btn btn-ghost btn-sm" %>
+        <% if @violation.fine_amount.to_d.positive? %>
+          <%= button_to "Issue fine", convert_to_fine_violation_path(@violation), method: :post, class: "btn btn-secondary btn-sm", data: { turbo_confirm: "Issue a fine of #{number_to_currency(@violation.fine_amount)}?" } %>
+        <% end %>
+        <%= link_to "Edit", edit_violation_path(@violation), class: "btn btn-ghost btn-sm" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,13 @@
+one:
+  name: Swimming Pool
+  description: Pool area
+  capacity: 30
+  hourly_rate: 25.0
+  building: one
+
+two:
+  name: BBQ Area
+  description: BBQ area
+  capacity: 20
+  hourly_rate: 15.0
+  building: one

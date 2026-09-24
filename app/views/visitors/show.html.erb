@@ -1,0 +1,68 @@
+<%= page_title @visitor.name, subtitle: "Visitor for unit #{@visitor.unit&.unit_number}" do %>
+  <% if staff_user? %>
+    <% unless @visitor.approved? %>
+      <%= button_to "Approve", approve_visitor_path(@visitor), method: :patch, class: "btn btn-success" %>
+    <% end %>
+    <% if @visitor.approved? && !@visitor.on_site? && @visitor.checked_out_at.nil? %>
+      <%= button_to "Check in", check_in_visitor_path(@visitor), method: :patch, class: "btn btn-primary" %>
+    <% end %>
+    <% if @visitor.on_site? %>
+      <%= button_to "Check out", check_out_visitor_path(@visitor), method: :patch, class: "btn btn-secondary" %>
+    <% end %>
+  <% end %>
+  <%= link_to "Back", visitors_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Visitor details</h2>
+    <%= status_badge @visitor %>
+  </div>
+  <div class="definition-list">
+    <div>
+      <div class="term">Name</div>
+      <div class="value"><%= @visitor.name %></div>
+    </div>
+    <div>
+      <div class="term">ID / document</div>
+      <div class="value"><%= @visitor.id_number %></div>
+    </div>
+    <div>
+      <div class="term">Phone</div>
+      <div class="value"><%= @visitor.phone %></div>
+    </div>
+    <div>
+      <div class="term">Visit date</div>
+      <div class="value"><%= @visitor.visit_date&.strftime("%B %-d, %Y") %></div>
+    </div>
+    <div>
+      <div class="term">Expected arrival</div>
+      <div class="value"><%= @visitor.visit_time&.strftime("%b %-d, %H:%M") || "Not specified" %></div>
+    </div>
+    <div>
+      <div class="term">Purpose</div>
+      <div class="value"><%= @visitor.purpose %></div>
+    </div>
+    <div>
+      <div class="term">Host</div>
+      <div class="value"><%= @visitor.resident.user.name %> · Unit <%= @visitor.unit&.unit_number %></div>
+    </div>
+    <% if @visitor.checked_in_at.present? %>
+      <div>
+        <div class="term">Checked in</div>
+        <div class="value"><%= @visitor.checked_in_at.strftime("%b %-d, %H:%M") %></div>
+      </div>
+    <% end %>
+    <% if @visitor.checked_out_at.present? %>
+      <div>
+        <div class="term">Checked out</div>
+        <div class="value"><%= @visitor.checked_out_at.strftime("%b %-d, %H:%M") %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if staff_user? && @visitor.approved? && !@visitor.on_site? && @visitor.checked_out_at.nil? %>
+    <hr class="divider">
+    <%= button_to "Reject / revoke approval", reject_visitor_path(@visitor), method: :patch, class: "btn btn-ghost btn-sm", data: { turbo_confirm: "Revoke approval for this visitor?" } %>
+  <% end %>
+</div>

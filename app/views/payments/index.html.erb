@@ -1,0 +1,89 @@
+<%= page_title "Payments", subtitle: staff_user? ? "Dues and charges across the community" : "Your dues and charges" do %>
+  <% if staff_user? %>
+    <%= link_to new_payment_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> Add charge<% end %>
+  <% end %>
+<% end %>
+
+<% if staff_user? %>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-header"><h2>Automations</h2><span class="text-muted">Buildium-style billing</span></div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <%= form_with url: generate_monthly_payments_path, method: :post, style: "display:flex; gap:8px;" do |f| %>
+        <%= number_field_tag :amount, 500, step: "0.01", min: 1, class: "form-control", style: "max-width:140px;" %>
+        <%= f.submit "Generate monthly fees", class: "btn btn-secondary btn-sm" %>
+      <% end %>
+      <%= button_to "Sweep overdue", mark_overdue_payments_path, method: :post, class: "btn btn-ghost btn-sm" %>
+      <%= button_to "Apply 2% late fees", apply_late_fees_payments_path, method: :post, class: "btn btn-ghost btn-sm" %>
+    </div>
+    <% if @summary %>
+      <div class="list-meta" style="margin-top:8px;">
+        <span>Collection rate <%= @summary[:collection_rate] %>%</span>
+        <span>Overdue <%= money(@summary[:overdue_total]) %> (<%= @summary[:overdue_count] %>)</span>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="grid grid-stats">
+  <div class="stat-card">
+    <span class="stat-icon green"><%= icon "card" %></span>
+    <div class="stat-body">
+      <div class="stat-value"><%= money(@payments.select(&:paid?).sum(&:amount)) %></div>
+      <div class="stat-label">Collected</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon yellow"><%= icon "clock" %></span>
+    <div class="stat-body">
+      <div class="stat-value"><%= money(@total_pending) %></div>
+      <div class="stat-label">Pending</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon red"><%= icon "alert" %></span>
+    <div class="stat-body">
+      <div class="stat-value"><%= @payments.count { |p| p.overdue? && !p.paid? } %></div>
+      <div class="stat-label">Overdue</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <% if @payments.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Unit</th>
+            <th class="num">Amount</th>
+            <th>Due</th>
+            <th>Status</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @payments.each do |payment| %>
+            <tr>
+              <td>
+                <%= link_to payment.payment_type_label, payment, class: "list-title" %>
+                <div class="list-meta"><span><%= payment.description %></span></div>
+              </td>
+              <td class="text-muted"><%= payment.unit.unit_number %></td>
+              <td class="num"><%= money(payment.amount) %></td>
+              <td class="text-muted"><%= payment.due_date.strftime("%b %-d, %Y") %></td>
+              <td><%= status_badge payment %></td>
+              <td class="actions">
+                <% if staff_user? && !payment.paid? %>
+                  <%= button_to "Mark paid", mark_paid_payment_path(payment), method: :patch, class: "btn btn-success btn-sm" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "card", title: "No payments", message: "There are no charges to show yet.", action_label: (staff_user? ? "Add charge" : nil), action_path: (staff_user? ? new_payment_path : nil) %>
+  <% end %>
+</div>

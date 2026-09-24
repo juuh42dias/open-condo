@@ -1,0 +1,23 @@
+AllCops:
+  Exclude:
+    - "vendor/**/*"
+    - "db/**/*"
+    - "bin/**/*"
+    - "Gemfile"
+    - "Gemfile.lock"
+    - "Rakefile"
+    - "Guardfile"
+    - "node_modules/**/*"
+    - "tmp/**/*"
+    - "spec/**/*"
+    - "test/**/*"
+  TargetRubyVersion: 3
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 130
+
+Rails/OutputSafety:
+  Enabled: false

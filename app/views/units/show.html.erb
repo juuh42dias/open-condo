@@ -1,0 +1,56 @@
+<%= page_title "Unit #{@unit.unit_number}", subtitle: @building.name do %>
+  <% if staff_user? %>
+    <%= link_to "Edit", edit_building_unit_path(@building, @unit), class: "btn btn-secondary" %>
+  <% end %>
+  <%= link_to "Back to building", @building, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h2>Details</h2>
+      <%= status_badge @unit %>
+    </div>
+    <div class="definition-list">
+      <div>
+        <div class="term">Type</div>
+        <div class="value"><%= @unit.unit_type_label %></div>
+      </div>
+      <div>
+        <div class="term">Layout</div>
+        <div class="value"><%= @unit.details %></div>
+      </div>
+      <div>
+        <div class="term">Status</div>
+        <div class="value"><%= @unit.status.titleize %></div>
+      </div>
+      <div>
+        <div class="term">Resident</div>
+        <div class="value"><%= @unit.current_resident&.user&.name || "Vacant" %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Maintenance</h2>
+      <%= link_to "New", new_maintenance_request_path, class: "card-link" %>
+    </div>
+    <% requests = @unit.maintenance_requests.ordered.limit(5) %>
+    <% if requests.any? %>
+      <div class="list">
+        <% requests.each do |request| %>
+          <%= link_to request, class: "list-item" do %>
+            <div class="list-main">
+              <div class="list-title"><%= request.title %></div>
+              <div class="list-meta"><span><%= time_ago_in_words(request.created_at) %> ago</span></div>
+            </div>
+            <div class="list-trailing"><%= status_badge request %></div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= render "shared/empty_state", icon_name: "tools", title: "No requests", message: "No maintenance history for this unit." %>
+    <% end %>
+  </div>
+</div>

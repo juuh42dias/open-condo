@@ -1,0 +1,11 @@
+<%= page_title "Edit unit ##{@unit.unit_number}", subtitle: @building.name %>
+
+<div class="card">
+  <%= render "form", building: @building, unit: @unit, submit_label: "Save changes" %>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Danger zone</h2></div>
+  <p class="text-muted">Deleting a unit removes its resident, payment and maintenance history.</p>
+  <%= button_to "Delete unit", [@building, @unit], method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Delete unit ##{@unit.unit_number}?" } %>
+</div>

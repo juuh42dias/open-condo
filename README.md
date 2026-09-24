@@ -22,10 +22,13 @@ A comprehensive Ruby on Rails application for managing residential condominium c
 - **Residents** - Resident information and unit assignments
 - **Maintenance Requests** - Issue tracking and resolution management
 - **Notices** - Community announcements and building communications
-- **Payments** - Financial tracking and dues management
+- **Payments** - Financial tracking and dues management with monthly fee generation, overdue sweep, and late fees (`rake payments:billing_cycle`)
 - **Common Areas** - Shared facility management
 - **Reservations** - Common area booking system
 - **Visitors** - Visitor registration and approval system
+- **Packages** - Concierge parcel log with notify / pickup / return workflow
+- **Violations** - Rule violation tracking with acknowledge / resolve / dismiss and fine-to-payment conversion
+- **Polls** - Surveys and e-voting with one-vote-per-user enforcement and live results
 
 ## 🚀 Getting Started
 

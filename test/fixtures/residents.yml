@@ -1,0 +1,11 @@
+one:
+  user: resident
+  unit: one
+  move_in_date: 2026-01-05
+  move_out_date:
+
+two:
+  user: owner
+  unit: two
+  move_in_date: 2026-01-05
+  move_out_date:

@@ -1,0 +1,45 @@
+<%= page_title "Buildings", subtitle: "#{@buildings.count} #{"building".pluralize(@buildings.count)} in your community" do %>
+  <% if staff_user? %>
+    <%= link_to new_building_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> Add building<% end %>
+  <% end %>
+<% end %>
+
+<% if @buildings.any? %>
+  <div class="grid grid-cards">
+    <% @buildings.each do |building| %>
+      <div class="card">
+        <div class="card-header">
+          <h2><%= link_to building.name, building %></h2>
+          <%= badge("#{building.occupancy_rate}% full", building.occupancy_rate >= 80 ? :green : :blue) %>
+        </div>
+        <div class="meta-row">
+          <span class="meta"><%= icon "pin", size: 16 %> <%= building.address %></span>
+        </div>
+        <div class="grid grid-stats" style="margin: 0; gap: 10px;">
+          <div class="stat-card" style="padding: 12px; box-shadow: none; border-color: var(--slate-100);">
+            <div class="stat-body">
+              <div class="stat-value" style="font-size: 1.25rem;"><%= building.unit_count %></div>
+              <div class="stat-label">Units</div>
+            </div>
+          </div>
+          <div class="stat-card" style="padding: 12px; box-shadow: none; border-color: var(--slate-100);">
+            <div class="stat-body">
+              <div class="stat-value" style="font-size: 1.25rem;"><%= building.occupied_units.count %></div>
+              <div class="stat-label">Occupied</div>
+            </div>
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top: 14px;">
+          <%= link_to "View", building, class: "btn btn-secondary btn-sm" %>
+          <% if staff_user? %>
+            <%= link_to "Edit", edit_building_path(building), class: "btn btn-ghost btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card">
+    <%= render "shared/empty_state", icon_name: "building", title: "No buildings yet", message: "Add your first building to start adding units and residents.", action_label: (staff_user? ? "Add building" : nil), action_path: (staff_user? ? new_building_path : nil) %>
+  </div>
+<% end %>

@@ -1,0 +1,19 @@
+one:
+  name: John Visitor
+  id_number: DOC001
+  phone: "5551112222"
+  visit_date: 2026-12-10
+  visit_time: 2026-12-10 14:00:00
+  resident: one
+  purpose: Family visit for dinner
+  approved: true
+
+two:
+  name: Jane Visitor
+  id_number: DOC002
+  phone: "5553334444"
+  visit_date: 2026-12-11
+  visit_time: 2026-12-11 10:00:00
+  resident: one
+  purpose: Package delivery pickup
+  approved: false

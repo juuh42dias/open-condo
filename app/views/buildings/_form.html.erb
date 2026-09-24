@@ -1,0 +1,29 @@
+<%= form_with model: building, class: "form" do |f| %>
+  <%= render "shared/form_errors", object: building %>
+
+  <div class="form-group">
+    <%= f.label :name, class: "form-label" %>
+    <%= f.text_field :name, class: "form-control", placeholder: "Sunset Towers", required: true %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :address, class: "form-label" %>
+      <%= f.text_field :address, class: "form-control", placeholder: "123 Main St, City", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :total_units, "Total units", class: "form-label" %>
+      <%= f.number_field :total_units, class: "form-control", min: 1, required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description, class: "form-label" %>
+    <%= f.text_area :description, class: "form-control", rows: 4, placeholder: "A short description of the building and its amenities" %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit submit_label, class: "btn btn-primary" %>
+    <%= link_to "Cancel", (building.persisted? ? building : buildings_path), class: "btn btn-ghost" %>
+  </div>
+<% end %>

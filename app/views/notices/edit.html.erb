@@ -1,0 +1,11 @@
+<%= page_title "Edit notice", subtitle: @notice.title %>
+
+<div class="card">
+  <%= render "form", notice: @notice, submit_label: "Save changes" %>
+</div>
+
+<div class="card">
+  <div class="card-header"><h2>Danger zone</h2></div>
+  <p class="text-muted">Deleting a notice removes it from everyone's feed.</p>
+  <%= button_to "Delete notice", @notice, method: :delete, class: "btn btn-danger", data: { turbo_confirm: "Delete this notice?" } %>
+</div>

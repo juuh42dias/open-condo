@@ -1,0 +1,49 @@
+<%= page_title @payment.payment_type_label, subtitle: @payment.unit.label do %>
+  <% if staff_user? %>
+    <% if @payment.paid? %>
+      <%= button_to "Mark pending", mark_pending_payment_path(@payment), method: :patch, class: "btn btn-secondary" %>
+    <% else %>
+      <%= button_to "Mark paid", mark_paid_payment_path(@payment), method: :patch, class: "btn btn-success" %>
+    <% end %>
+  <% end %>
+  <%= link_to "Back", payments_path, class: "btn btn-ghost" %>
+<% end %>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Charge details</h2>
+    <%= status_badge @payment %>
+  </div>
+  <div class="definition-list">
+    <div>
+      <div class="term">Description</div>
+      <div class="value"><%= @payment.description %></div>
+    </div>
+    <div>
+      <div class="term">Amount</div>
+      <div class="value"><%= money(@payment.amount) %></div>
+    </div>
+    <div>
+      <div class="term">Type</div>
+      <div class="value"><%= @payment.payment_type_label %></div>
+    </div>
+    <div>
+      <div class="term">Due date</div>
+      <div class="value"><%= @payment.due_date.strftime("%B %-d, %Y") %></div>
+    </div>
+    <div>
+      <div class="term">Unit</div>
+      <div class="value"><%= link_to @payment.unit.label, [@payment.unit.building, @payment.unit] %></div>
+    </div>
+    <div>
+      <div class="term">Billed to</div>
+      <div class="value"><%= @payment.user.name %></div>
+    </div>
+    <% if @payment.paid_at.present? %>
+      <div>
+        <div class="term">Paid on</div>
+        <div class="value"><%= @payment.paid_at.strftime("%b %-d, %Y %H:%M") %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

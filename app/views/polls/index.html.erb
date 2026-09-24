@@ -1,0 +1,27 @@
+<%= page_title "Polls & Voting", subtitle: "Surveys and community decisions" do %>
+  <% if staff_user? %>
+    <%= link_to new_poll_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> New poll<% end %>
+  <% end %>
+<% end %>
+
+<div class="card">
+  <% if @polls.any? %>
+    <div class="list">
+      <% @polls.each do |poll| %>
+        <%= link_to poll, class: "list-item" do %>
+          <div class="list-main">
+            <div class="list-title"><%= poll.title %></div>
+            <div class="list-meta">
+              <span><%= poll.building&.name %></span>
+              <span><%= poll.total_votes %> votes</span>
+              <% if poll.closes_at.present? %><span>Closes <%= poll.closes_at.strftime("%b %-d") %></span><% end %>
+            </div>
+          </div>
+          <div class="list-trailing"><%= status_badge poll %></div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "vote", title: "No polls", message: "Staff can publish surveys and e-votes for the community." %>
+  <% end %>
+</div>

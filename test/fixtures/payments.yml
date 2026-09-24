@@ -1,0 +1,19 @@
+one:
+  user: resident
+  unit: one
+  amount: 500.0
+  payment_type: condo_fee
+  due_date: 2026-12-31
+  paid_at:
+  status: pending
+  description: Monthly condo fee - December 2026
+
+two:
+  user: resident
+  unit: one
+  amount: 500.0
+  payment_type: condo_fee
+  due_date: 2026-01-31
+  paid_at: 2026-01-30 10:00:00
+  status: paid
+  description: Monthly condo fee - January 2026

@@ -1,0 +1,39 @@
+<%= page_title "Visitors", subtitle: staff_user? ? "Visitor registrations and approvals" : "Visitors you have registered" do %>
+  <%= link_to new_visitor_path, class: "btn btn-primary" do %><%= icon "plus", size: 18 %> Register visitor<% end %>
+<% end %>
+
+<div class="card">
+  <% if @visitors.any? %>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Visitor</th>
+            <th>Unit</th>
+            <th>Visit date</th>
+            <th>Purpose</th>
+            <th>Status</th>
+            <th class="actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @visitors.each do |visitor| %>
+            <tr>
+              <td>
+                <%= link_to visitor.name, visitor, class: "list-title" %>
+                <div class="list-meta"><span><%= visitor.phone %></span></div>
+              </td>
+              <td class="text-muted"><%= visitor.unit&.unit_number || "—" %></td>
+              <td class="text-muted"><%= visitor.visit_date&.strftime("%b %-d, %Y") %></td>
+              <td class="text-muted"><%= truncate(visitor.purpose, length: 40) %></td>
+              <td><%= status_badge visitor %></td>
+              <td class="actions"><%= link_to "View", visitor, class: "btn btn-ghost btn-sm" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <%= render "shared/empty_state", icon_name: "door", title: "No visitors", message: "Register expected visitors so the front desk knows who to expect.", action_label: "Register visitor", action_path: new_visitor_path %>
+  <% end %>
+</div>

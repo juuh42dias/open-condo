@@ -1,0 +1,63 @@
+<%= form_with model: user, class: "form", data: { controller: "role" } do |f| %>
+  <%= render "shared/form_errors", object: user %>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :name, class: "form-label" %>
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :role, class: "form-label" %>
+      <%= f.select :role, User.roles.map { |r| [r.capitalize, r] }, {}, class: "form-control", data: { role_target: "select", action: "role#change" } %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, class: "form-control", required: true %>
+    </div>
+    <div class="form-group">
+      <%= f.label :phone, class: "form-label" %>
+      <%= f.telephone_field :phone, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= f.label :password, class: "form-label" %>
+      <%= f.password_field :password, class: "form-control", autocomplete: "new-password", required: user.new_record? %>
+      <span class="form-hint"><%= user.new_record? ? "Minimum 6 characters." : "Leave blank to keep the current password." %></span>
+    </div>
+    <div class="form-group">
+      <%= f.label :password_confirmation, "Confirm password", class: "form-label" %>
+      <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "new-password" %>
+    </div>
+  </div>
+
+  <div class="card" data-role-target="assignment" style="box-shadow: none; background: var(--slate-50);">
+    <div class="card-header"><h3>Unit assignment</h3></div>
+
+    <div class="form-group">
+      <%= label_tag "user_unit_id", "Assign to unit", class: "form-label" %>
+      <%= select_tag "user[unit_id]", options_from_collection_for_select(units, :id, :label, selected_unit_id), include_blank: "None", class: "form-control" %>
+      <span class="form-hint" data-role-target="residentHint">Residents are linked to the unit they live in.</span>
+      <span class="form-hint" data-role-target="ownerHint">Owners gain access to the units they own.</span>
+    </div>
+
+    <div class="form-group" data-role-target="resident">
+      <%= label_tag "user_move_in_date", "Move-in date", class: "form-label" %>
+      <%= date_field_tag "user[move_in_date]", user.resident&.move_in_date || Date.current, class: "form-control" %>
+    </div>
+
+    <div class="form-group" data-role-target="owner">
+      <%= label_tag "user_ownership_percentage", "Ownership percentage", class: "form-label" %>
+      <%= number_field_tag "user[ownership_percentage]", user.owner&.ownerships&.first&.ownership_percentage || 100, class: "form-control", step: "0.01", min: 0, max: 100 %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit submit_label, class: "btn btn-primary" %>
+    <%= link_to "Cancel", (user.persisted? ? user : users_path), class: "btn btn-ghost" %>
+  </div>
+<% end %>
