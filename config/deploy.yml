@@ -1,20 +1,17 @@
 # Kamal 2 deploy config for OpenCondo -> https://condo.juliana.dev/
 # Docs: https://kamal-deploy.org
 #
-# BEFORE FIRST DEPLOY, replace:
-#   1. PASTE_VPS_HOST below with your VPS IP/hostname (3 spots: web + db + redis)
-#   2. your-dockerhub-user with your Docker Hub username
-# Then fill in .kamal/secrets (see .kamal/secrets.example) and run:
+# Secrets live in .kamal/secrets (gitignored, see .kamal/secrets.example).
 #   kamal setup   # first time: boots proxy + accessories + app
 #   kamal deploy  # subsequent deploys
 
 service: open-condo
-image: your-dockerhub-user/open-condo
+image: juuh42dias/open-condo
 
 servers:
   web:
     hosts:
-      - PASTE_VPS_HOST
+      - 31.220.87.82
     volumes:
       - "open_condo_storage:/rails/storage"
 
@@ -32,7 +29,7 @@ healthcheck:
   port: 3000
 
 registry:
-  username: your-dockerhub-user
+  username: juuh42dias
   password:
     - KAMAL_REGISTRY_PASSWORD
 
@@ -50,7 +47,7 @@ env:
 accessories:
   db:
     image: postgres:16
-    host: PASTE_VPS_HOST
+    host: 31.220.87.82
     port: 5432
     env:
       clear:
@@ -63,11 +60,11 @@ accessories:
 
   redis:
     image: redis:7.0
-    host: PASTE_VPS_HOST
+    host: 31.220.87.82
     port: 6379
     volumes:
       - "open_condo_redis_data:/data"
 
-# Uncomment if your VPS SSH user is not root:
-# ssh:
-#   user: deploy
+# SSH as non-root user
+ssh:
+  user: kamal
