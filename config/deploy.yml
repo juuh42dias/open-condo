@@ -12,21 +12,20 @@ servers:
   web:
     hosts:
       - 31.220.87.82
-    volumes:
-      - "open_condo_storage:/rails/storage"
+
+# Persist Active Storage uploads across deploys
+volumes:
+  - "open_condo_storage:/rails/storage"
 
 proxy:
   ssl: true
   host: condo.juliana.dev
   app_port: 3000
+  forward_headers: true
   healthcheck:
     path: /_health
     interval: 3
     timeout: 2
-
-healthcheck:
-  path: /_health
-  port: 3000
 
 registry:
   username: juuh42dias
