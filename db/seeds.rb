@@ -1,164 +1,111 @@
-# Create default admin user
-admin_user = User.create!(
-  name: "Admin User",
-  email: "admin@condo.com",
-  password: "password",
-  password_confirmation: "password",
-  role: "admin",
-  phone: "1234567890"
-)
+# Idempotent seeds: safe to re-run (`kamal app exec "bin/rails db:seed"`).
+# Records are found by their natural keys before creation.
 
-puts "Created admin user: #{admin_user.email}"
+def seed_user!(email, attrs)
+  user = User.find_by(email: email)
+  return user if user
 
-# Create a sample building
-building = Building.create!(
-  name: "Sunset Towers",
-  address: "123 Main St, City, State 12345",
-  description: "A beautiful condominium complex with amazing amenities",
-  total_units: 50
-)
+  User.create!(attrs.merge(email: email)).tap do |u|
+    puts "Created user: #{u.email}"
+  end
+end
 
-puts "Created building: #{building.name}"
+admin_user = seed_user!("admin@condo.com",
+  name: "Admin User", password: "password", password_confirmation: "password",
+  role: "admin", phone: "1234567890")
 
-# Create sample units
+owner_user = seed_user!("owner@condo.com",
+  name: "John Owner", password: "password", password_confirmation: "password",
+  role: "owner", phone: "9876543210")
+
+resident_user = seed_user!("resident@condo.com",
+  name: "Jane Resident", password: "password", password_confirmation: "password",
+  role: "resident", phone: "5555555555")
+
+building = Building.find_or_create_by!(name: "Sunset Towers") do |b|
+  b.address = "123 Main St, City, State 12345"
+  b.description = "A beautiful condominium complex with amazing amenities"
+  b.total_units = 50
+end
+puts "Building: #{building.name}"
+
 5.times do |i|
-  unit = Unit.create!(
-    unit_number: "#{100 + i}",
-    building: building,
-    unit_type: "apartment",
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 120.5,
-    status: "available"
-  )
-  puts "Created unit: #{unit.unit_number}"
+  Unit.find_or_create_by!(unit_number: "#{100 + i}", building: building) do |unit|
+    unit.unit_type = "apartment"
+    unit.bedrooms = 2
+    unit.bathrooms = 2
+    unit.area = 120.5
+    unit.status = "available"
+  end
+end
+puts "Units: #{building.units.count}"
+
+owner = Owner.find_or_create_by!(user: owner_user)
+puts "Owner: #{owner_user.name}"
+
+first_unit = building.units.order(:unit_number).first
+Ownership.find_or_create_by!(owner: owner, unit: first_unit) do |o|
+  o.ownership_percentage = 100.0
+end
+puts "Ownership for unit #{first_unit.unit_number}"
+
+Resident.find_or_create_by!(user: resident_user, unit: first_unit) do |r|
+  r.move_in_date = Date.today
+end
+puts "Resident: #{resident_user.name}"
+
+first_unit.update!(status: "occupied") unless first_unit.status == "occupied"
+
+[
+  { name: "Swimming Pool", description: "Olympic-size swimming pool with lounge area", capacity: 30, hourly_rate: 25.0 },
+  { name: "BBQ Area", description: "Outdoor barbecue area with seating", capacity: 20, hourly_rate: 15.0 },
+  { name: "Gym", description: "Fully equipped fitness center", capacity: 15, hourly_rate: 10.0 }
+].each do |area_data|
+  CommonArea.find_or_create_by!(name: area_data[:name], building: building) do |area|
+    area.assign_attributes(area_data.except(:name))
+  end
+end
+puts "Common areas: #{building.common_areas.count}"
+
+MaintenanceRequest.where(
+  user: resident_user, unit: first_unit, title: "Leaky faucet in kitchen"
+).first_or_create! do |mr|
+  mr.description = "The kitchen faucet is dripping and needs to be repaired as soon as possible."
+  mr.priority = "medium"
+  mr.status = "pending"
 end
 
-# Create sample owner
-owner_user = User.create!(
-  name: "John Owner",
-  email: "owner@condo.com",
-  password: "password",
-  password_confirmation: "password",
-  role: "owner",
-  phone: "9876543210"
-)
-
-owner = Owner.create!(user: owner_user)
-puts "Created owner: #{owner_user.name}"
-
-# Create ownership
-first_unit = building.units.first
-Ownership.create!(
-  owner: owner,
-  unit: first_unit,
-  ownership_percentage: 100.0
-)
-puts "Created ownership for unit #{first_unit.unit_number}"
-
-# Create sample resident
-resident_user = User.create!(
-  name: "Jane Resident",
-  email: "resident@condo.com",
-  password: "password",
-  password_confirmation: "password",
-  role: "resident",
-  phone: "5555555555"
-)
-
-resident = Resident.create!(
-  user: resident_user,
-  unit: first_unit,
-  move_in_date: Date.today
-)
-puts "Created resident: #{resident_user.name}"
-
-# Update unit status to occupied
-first_unit.update!(status: "occupied")
-
-# Create common areas
-common_areas = [
-  {
-    name: "Swimming Pool",
-    description: "Olympic-size swimming pool with lounge area",
-    capacity: 30,
-    hourly_rate: 25.0
-  },
-  {
-    name: "BBQ Area",
-    description: "Outdoor barbecue area with seating",
-    capacity: 20,
-    hourly_rate: 15.0
-  },
-  {
-    name: "Gym",
-    description: "Fully equipped fitness center",
-    capacity: 15,
-    hourly_rate: 10.0
-  }
-]
-
-common_areas.each do |area_data|
-  common_area = CommonArea.create!(
-    building: building,
-    **area_data
-  )
-  puts "Created common area: #{common_area.name}"
+Notice.where(
+  building: building, title: "Building Maintenance Notice"
+).first_or_create! do |notice|
+  notice.user = admin_user
+  notice.content = "Please be advised that elevator maintenance will be conducted this weekend. Service may be interrupted."
+  notice.priority = "high"
+  notice.published_at = Time.current
+  notice.expires_at = 1.week.from_now
 end
-
-# Create sample maintenance request
-maintenance_request = MaintenanceRequest.create!(
-  user: resident_user,
-  unit: first_unit,
-  title: "Leaky faucet in kitchen",
-  description: "The kitchen faucet is dripping and needs to be repaired as soon as possible.",
-  priority: "medium",
-  status: "pending"
-)
-puts "Created maintenance request: #{maintenance_request.title}"
-
-# Create sample notice
-notice = Notice.create!(
-  user: admin_user,
-  building: building,
-  title: "Building Maintenance Notice",
-  content: "Please be advised that elevator maintenance will be conducted this weekend. Service may be interrupted.",
-  priority: "high",
-  published_at: Time.current,
-  expires_at: 1.week.from_now
-)
-puts "Created notice: #{notice.title}"
 
 # Balanced Starter Pack samples (best-practice modules)
-package = Package.create!(
-  unit: first_unit,
-  recipient_name: resident_user.name,
-  sender: "Amazon",
-  carrier: "Correios",
-  tracking_code: "BR123456789",
-  notes: "Left in locker A1"
-)
-puts "Created package for #{package.recipient_name}"
+Package.where(unit: first_unit, tracking_code: "BR123456789").first_or_create! do |package|
+  package.recipient_name = resident_user.name
+  package.sender = "Amazon"
+  package.carrier = "Correios"
+  package.notes = "Left in locker A1"
+end
 
-violation = Violation.create!(
-  unit: first_unit,
-  reported_by: admin_user,
-  title: "Noise after quiet hours",
-  description: "Loud music reported after 10pm on two consecutive nights.",
-  violation_type: "noise",
-  severity: "medium",
-  fine_amount: 50.0
-)
-puts "Created violation: #{violation.title}"
+Violation.where(unit: first_unit, title: "Noise after quiet hours").first_or_create! do |violation|
+  violation.reported_by = admin_user
+  violation.description = "Loud music reported after 10pm on two consecutive nights."
+  violation.violation_type = "noise"
+  violation.severity = "medium"
+  violation.fine_amount = 50.0
+end
 
-poll = Poll.create!(
-  building: building,
-  user: admin_user,
-  title: "Should we renovate the playground?",
-  description: "Vote on the 2026 playground renovation proposal.",
-  closes_at: 2.weeks.from_now,
-  poll_options_attributes: [{ text: "Yes, renovate" }, { text: "No, keep as is" }, { text: "Needs more info" }]
-)
-puts "Created poll: #{poll.title}"
+Poll.where(building: building, title: "Should we renovate the playground?").first_or_create! do |poll|
+  poll.user = admin_user
+  poll.description = "Vote on the 2026 playground renovation proposal."
+  poll.closes_at = 2.weeks.from_now
+  poll.poll_options_attributes = [{ text: "Yes, renovate" }, { text: "No, keep as is" }, { text: "Needs more info" }]
+end
 
-puts "Seed data created successfully!"
+puts "Seed data ensured successfully!"
