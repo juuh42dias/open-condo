@@ -1,5 +1,5 @@
 <%= page_title "Reservations", subtitle: staff_user? ? "All common area bookings" : "Your common area bookings" do %>
-  <%= link_to "Browse areas", common_areas_path, class: "btn btn-secondary" do %><%= icon "calendar", size: 18 %> New booking<% end %>
+  <%= link_to common_areas_path, class: "btn btn-secondary" do %><%= icon "calendar", size: 18 %> New booking<% end %>
 <% end %>
 
 <div class="card">

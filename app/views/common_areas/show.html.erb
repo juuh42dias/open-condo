@@ -1,5 +1,5 @@
 <%= page_title @common_area.name, subtitle: @common_area.building.name do %>
-  <%= link_to "Reserve", new_building_common_area_reservation_path(@common_area.building, @common_area), class: "btn btn-primary" do %><%= icon "calendar", size: 18 %> Book now<% end %>
+  <%= link_to new_building_common_area_reservation_path(@common_area.building, @common_area), class: "btn btn-primary" do %><%= icon "calendar", size: 18 %> Book now<% end %>
   <% if staff_user? %>
     <%= link_to "Edit", edit_building_common_area_path(@common_area.building, @common_area), class: "btn btn-ghost" %>
   <% end %>

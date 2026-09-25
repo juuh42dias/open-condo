@@ -1,7 +1,7 @@
 <%= page_title @building.name, subtitle: @building.address do %>
   <% if staff_user? %>
-    <%= link_to "Add unit", new_building_unit_path(@building), class: "btn btn-secondary" do %><%= icon "plus", size: 18 %> Unit<% end %>
-    <%= link_to "Add area", new_building_common_area_path(@building), class: "btn btn-secondary" do %><%= icon "plus", size: 18 %> Common area<% end %>
+    <%= link_to new_building_unit_path(@building), class: "btn btn-secondary" do %><%= icon "plus", size: 18 %> Unit<% end %>
+    <%= link_to new_building_common_area_path(@building), class: "btn btn-secondary" do %><%= icon "plus", size: 18 %> Common area<% end %>
     <%= link_to "Edit", edit_building_path(@building), class: "btn btn-ghost" %>
   <% end %>
 <% end %>
