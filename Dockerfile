@@ -29,6 +29,10 @@ RUN bundle install && \
 
 COPY . .
 
+# config/database.yml is gitignored (and absent from the build context);
+# fall back to the sample — all credentials resolve from ENV at runtime.
+RUN if [ ! -f config/database.yml ]; then cp config/database.yml.sample config/database.yml; fi
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 

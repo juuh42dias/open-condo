@@ -1,0 +1,15 @@
+.git
+.gitignore
+.bundle
+tmp/*
+!tmp/.keep
+log/*
+!log/.keep
+storage/*
+!storage/.keep
+node_modules
+.kamal/secrets
+.env
+.env.local
+coverage
+public/assets
