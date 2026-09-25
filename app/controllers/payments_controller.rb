@@ -20,6 +20,7 @@ class PaymentsController < ApplicationController
 
   def create
     @payment = Payment.new(payment_params)
+    @payment.status ||= "pending"
     unit = Unit.find_by(id: @payment.unit_id)
     @payment.user = payer_for(unit)
 

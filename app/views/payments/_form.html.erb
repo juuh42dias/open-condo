@@ -29,6 +29,11 @@
     <%= f.text_field :description, class: "form-control", placeholder: "Monthly condo fee — September", required: true %>
   </div>
 
+  <div class="form-group">
+    <%= f.label :status, class: "form-label" %>
+    <%= f.select :status, Payment::STATUSES.map { |s| [s.capitalize, s] }, {}, class: "form-control" %>
+  </div>
+
   <div class="form-actions">
     <%= f.submit submit_label, class: "btn btn-primary" %>
     <%= link_to "Cancel", payments_path, class: "btn btn-ghost" %>
