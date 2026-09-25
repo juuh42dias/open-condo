@@ -18,7 +18,9 @@ volumes:
   - "open_condo_storage:/rails/storage"
 
 proxy:
-  ssl: true
+  ssl:
+    certificate_pem: CONDO_CERT_PEM
+    private_key_pem: CONDO_KEY_PEM
   host: condo.juliana.dev
   app_port: 3000
   forward_headers: true
